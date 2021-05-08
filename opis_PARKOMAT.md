@@ -1,5 +1,3 @@
-# JS_projekt_python
-
 # `Parkomat`
 
 ### ***OPIS ZADANIA***
@@ -35,3 +33,18 @@
 * Numer rejestracyjny może składać się tylko z wielkich liter od A do Z i cyfr.
 * W automacie mieści się dowolna liczba banknotów (10, 20, 50zł) i po 200 monet każdego rodzaju. Próba wrzucenia monety ponad limit powoduje wyświetlenie informacji o przepełnieniu parkomatu i prośbę o wrzucenie innego nominału.
 
+
+### ***TESTY*** 
+
+
+1. Ustaw niepoprawną godzinę. Oczekiwany komunikat o błędzie. Ustawić godzinę na 12:34.
+2. Wrzucić 2 zł, oczekiwany termin wyjazdu godzinę po aktualnym czasie. Dorzuć 4zł, oczekiwany termin wyjazdu dwie godziny po aktualnym czasie. Dorzuć Szł, oczekiwany termin wyjazdu trzy godziny po aktualnym czasie. Dorzuć kolejne Szł, oczekiwany termin wyjazdu cztery godziny po aktualnym czasie.
+3. Wrzucić tyle pieniędzy, aby termin wyjazdu przeszedł na kolejny dzień, zgodnie z zasadami -- wrzucić tyle monet aby termin wyjazdu był po godzinie 19:00, dorzucić monetę 5zł,
+4. Wrzucić tyle pieniędzy, aby termin wyjazdu przeszedł na kolejny tydzień, zgodnie z zasadami - wrzucić tyle monet aby termin wyjazdu był w piątek po godzinie 19:00, a potem dorzucić monetę 5 zł,
+5. Wrzucić 1 zł, oczekiwany termin wyjazdu pół godziny po aktualnym czasie,
+6. Wrzucić 200 monet 1 gr, oczekiwany termin wyjazdu godzinę po aktualnym czasie.
+7. Wrzucić 201 monet 1 gr, oczekiwana informacja o przepełnieniu parkomatu
+8. Wciśnięcie "Zatwierdź" bez wrzucenia monet -- oczekiwana informacja o błędzie.
+9. Weiśnięcie "Zatwierdź" bez wpisania numeru rejestracyjnego — oczekiwana informacja o błędzie. Wciśnięcie "Zatwierdź" po wpisaniu niepoprawnego numeru rejestracyjnego — oczekiwana informacja o błędzie.
+
+## [LINK DO MOJEGO REPOZYTORIUM](https://github.com/nnnastasiia/JS_projekt_python) 
