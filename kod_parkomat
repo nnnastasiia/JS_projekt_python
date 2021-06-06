@@ -15,7 +15,7 @@ from tkinter.messagebox import showinfo
 from tkinter import StringVar
 from decimal import Decimal
 from typing import Tuple
-from datetime import timedelta
+
 
 #Pieniądze
 class Pieniadze():
@@ -30,38 +30,38 @@ class Pieniadze():
         self.pieniadze[moneta]+=1    
         
 
-class Czas_Pracy:
-    def __init__(self):
-        self._akt_data = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+# class Czas_Pracy:
+#     def __init__(self):
+#         self._akt_data = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
         
-    def dodanie_czasu(self, akt_data: datetime, delta: timedelta):
-        while akt_data.weekday() in (5, 6):
-            akt_data = self._pocz_nast_dzien(akt_data)
+#     def dodanie_czasu(self, akt_data: datetime, delta: timedelta):
+#         while akt_data.weekday() in (5, 6):
+#             akt_data = self._pocz_nast_dzien(akt_data)
             
-        dzis_do20 = datetime.combine(akt_data.date(), time(20))
-        czas_do_konca = (dzis_do20 - self.akt_data)
-        if delta <= czas_do_konca:
-            return ak_data + delta
-        delta -= czas_do_konca
+#         dzis_do20 = datetime.combine(akt_data.date(), time(20))
+#         czas_do_konca = (dzis_do20 - self.akt_data)
+#         if delta <= czas_do_konca:
+#             return ak_data + delta
+#         delta -= czas_do_konca
         
-        akt_data = self._pocz_nast_dzien(akt_data)
-        day = timedelta(minutes = 720)
+#         akt_data = self._pocz_nast_dzien(akt_data)
+#         day = timedelta(minutes = 720)
         
-        while delta>= day:
-            delta -= day
-            akt_data = self._pocz_nast_dzien(akt_data)
+#         while delta>= day:
+#             delta -= day
+#             akt_data = self._pocz_nast_dzien(akt_data)
             
-        return akt_data + delta
+#         return akt_data + delta
     
-    def _pocz_nast_dzien(self, akt_data):
+#     def _pocz_nast_dzien(self, akt_data):
         
-        nowa_data = datetime.combine(akt_ata.date() + timedelta(days = 1), time(hour = 8))
-        if nowa_data.weekday() in (5,6):
-            return self._pocz_nast_dzien(nowa_data)
-        return nowa_data
+#         nowa_data = datetime.combine(akt_ata.date() + timedelta(days = 1), time(hour = 8))
+#         if nowa_data.weekday() in (5,6):
+#             return self._pocz_nast_dzien(nowa_data)
+#         return nowa_data
     
-    def ponow_time(self):
-        self._akt_data = self._akt_data + timedelta(seconds = 1)
+#     def ponow_time(self):
+#         self._akt_data = self._akt_data + timedelta(seconds = 1)
 
 
 
@@ -72,55 +72,76 @@ class Parkomat():
     def __init__(self, master):
         self._master = master
         self._current_delta = timedelta(seconds=0)
+
+        def dodajnr_click():
+            NrPoj = getNrPoj.get()
+            
+            if (len(NrPoj)==0):
+                messagebox.showerror("Błąd!", "Brak numeru rejestracyjnego!")
+                return
+            elif (len(NrPoj)>9):
+                messagebox.showerror("Błąd!", "Numer rejestracyjny dłuższy niż 9 znaków!")
+                return
+            #getNrPoj.delete(0, END)
+            #getNrPoj.insert(0, NrPoj.upper())
+            nrPoj_lbl.config(text = "Numer rejest.pojazdu:  " + str(NrPoj.upper()))
+            getNrPoj.pack_forget()
+            dodajnr_button.pack_forget()
   
         def akt_data_click():
             getData.delete(0, END)
             getData.insert(0, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
-        def zatw_click():
-            regNo = getNrPoj.get()
-            if (len(regnNo)==0):
-                messagebox.showerror("Błąd!", "Brak numeru rejestracyjnego!")
-                return
-            elif (len(regNo)>9):
-                messagebox.showerror("Błąd!", "Numer rejestracyjny dłuższy niż 9 znaków!")
-                return
-            getNrPoj.delete(0, END)
-            getNrPoj.insert(0,registrationNo.upper())
+#         def zatw_click():
+#             NrPoj = getNrPoj.get()
+#             term = getData.get()
+#             #startDateString = getData.get()
+#             #startDate = datetime.datetime.strptime(startDateString, '%Y-%m-%d %H:%M')
+#             #if (NrPoj != 0) and (wplacono != 0):
+#             messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:"+ str(NrPoj.upper()) + "\nWplacono:"+ str(wpl)+"\nTermin wyjazdu: ")
             
-            startDateString = getData.get()
-            startDate = datetime.datetime.strptime(startDateString, '%Y-%m-%d %H:%M')
         def closeWindow():
             root.destroy() 
     
         def countPieniadze():
             wplacono = 0
+            data1 = getData.get()
             for key, value in pieniadze.pieniadze.items():
                 wplacono += value*key*100
-            zaplacono_lbl.config(text='Zapłacono: ' + str(round(wplacono/100.0,2)) + ' zł') 
-                            
-            if wpłacono <= Decimal('2'):
-                self._current_delta = timedelta(seconds=float(wplacono/Decimal('2')*3600))
-                return
-            wplacono -=Decimal('2')
-            self._current_delta = timedelta(seconds=3600)
+            zaplacono_lbl.config(text='Zapłacono: ' + str(round(wplacono/100.0,2)) + ' zł')
+            data_park.config(text = "Data parkowania:  " + data1)
+            getData.pack_forget()
+            akt_data_button.pack_forget()
+            if (round(wplacono/100.0,2) == 1.0):
+                nowa_data = str(data1 + timedelta(minutes=30))
+#                 czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(minutes=30)))
+                czas_label.config(text='Czas wyjazdu: ' + nowa_data)
+            if (round(wplacono/100.0,2) == 5.0):
+                czas_label.config(text='Czas wyjazdu: ' + str(data1 + timedelta(hours=1, minutes=45)))
+            if (round(wplacono/100.0,2) == 2.0):
+                czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(hours=1)))
+            if (round(wplacono/100.0,2) == 4.0):
+                czas_label.config(text='Czas wyjazdu: ' + str(data1 + timedelta(hours=2)))
+        def zatw_click():
+            NrPoj = getNrPoj.get()
+            term = getData.get()
+            #startDateString = getData.get()
+            #startDate = datetime.datetime.strptime(startDateString, '%Y-%m-%d %H:%M')
+            #if (NrPoj != 0) and (wplacono != 0):
+            messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:"+ str(NrPoj.upper()) + "\nWplacono:"+ str((round(wplacono/100.0,2)))+"\nTermin wyjazdu: ")
             
-            if wpłacono <= Decimal('4'):
-                self._current_delta += timedelta(seconds=float(wplacono/Decimal('4')*3600))
-                return
-            wplacono -=Decimal('4')
-            self._current_delta += timedelta(seconds=3600)
-            
-            self._current_delta += timedelta(seconds=float(wplacono/Decimal('5')*3600))
-                
+#             if ((round(wplacono/100.0,2) == 11.0) or ((round(wplacono/100.0,2)-6) % 5 == 0)):
+# #                 nowy_czas += datetime.datetime.now() + timedelta(hours=1)
+#                 czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(hours=3)))
+#             for wplacono in int(wplacono):
+#                 if ((round(wplacono/100.0,2) == 11.0) or ((round(wplacono/100.0,2)-6) % 5 == 0)):
+#                     nowy_czas += timedelta(hours=1)
+#                     czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + nowy_czas))
+
         pieniadze=Pieniadze()
-        wpłacono=0
-        doZapłaty=0
+#         wplacono=0
 
-
-
-    
-    
+            
             
         master.title("Parkomat")
     
@@ -177,28 +198,32 @@ class Parkomat():
                       command= lambda: [pieniadze.dodaj_monete(50), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
     
 
-        Label(frame_coins1, text="Numer rejest.pojazdu:").pack(side = LEFT,padx=5, pady=5)
+        nrPoj_lbl = Label(frame_coins1, text="Numer rejest.pojazdu:")
+        nrPoj_lbl.pack(side = LEFT,padx=5, pady=5)
         getNrPoj = Entry(frame_coins1, width = 20)
         getNrPoj.pack(side=LEFT, padx=10)
+        dodajnr_button = Button(frame_coins1, text= "Dodaj", width = 10, command = dodajnr_click, bg='alice blue')
+        dodajnr_button.pack(side = LEFT, padx=5, pady=5)
     
-    
-        Label(frame_coins2, text="Data parkowania:").pack(side = LEFT,padx=5, pady=5)
+        data_park = Label(frame_coins2, text="Data parkowania:")
+        data_park.pack(side = LEFT,padx=5, pady=5)
         getData = Entry(frame_coins2, width=20)
         getData.pack(side=LEFT, padx=10)
-        getData.insert(END, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+        #getData.insert(END, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
         
-        akt_data_button = Button(frame_coins2, text="Akt. data", width=10, command = akt_data_click, bg='alice blue').pack(side = LEFT, padx=5, pady=5)
+        akt_data_button = Button(frame_coins2, text="Akt. data", width=10, command = akt_data_click, bg='alice blue')
+        akt_data_button.pack(side = LEFT, padx=5, pady=5)
         
     
         czas_label = Label(frame_coins3, text="Czas wyjazdu:")
         czas_label.pack(side = LEFT,padx=5, pady=5)
         
         zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
-        zaplacono_lbl.pack(side=LEFT, padx=5)
+        zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
         
         Button(master, text="Anuluj", command = closeWindow, bg='IndianRed1').pack(side = RIGHT,padx=5, pady=5)
-        Button(master, text="Zatwierdz", bg='lawn green').pack(side = RIGHT,padx=5, pady=5)
+        Button(master, text="Zatwierdz",command = zatw_click, bg='lawn green').pack(side = RIGHT,padx=5, pady=5)
     
     
        
