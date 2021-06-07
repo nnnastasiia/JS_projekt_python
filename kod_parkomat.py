@@ -1,20 +1,12 @@
 import tkinter as tk
 from tkinter import *
 from tkinter import messagebox
-from tkinter.ttk import Frame, Label
+from tkinter.ttk import Frame, Label, Button, Entry
 import datetime
 from datetime import timedelta
-import random
-from threading import Timer
-from time import sleep
-from collections import OrderedDict
 from tkinter import *
-from tkinter import ttk
-from tkinter import Entry, Label, Button
 from tkinter.messagebox import showinfo
-from tkinter import StringVar
 from decimal import Decimal
-from typing import Tuple
 
 
 # Pieniądze
@@ -56,9 +48,9 @@ class PrzechowywaczMonet:
                 if len(self._lista_monet) < 200:
                     self._lista_monet.append(moneta)
                 else:
-                    raise parkomatFullExeption("Parkomat jest pelny")
+                    raise parkomatFullExeption
         except parkomatFullExeption as pFE:
-            showinfo("Pakromat pelny", "Przepraszamy, parkomat jest pelny")
+            showinfo("Parkomat pelny", "Przepraszamy, parkomat jest pelny")
 
     def suma(self):
         suma_monet = Decimal(0)
@@ -72,9 +64,12 @@ class PrzechowywaczMonet:
 
 class Parkomat():
 
+    
+
     def __init__(self, master, przech):
         self._master = master
         self.przechowywaczMonet = przech
+        self.data_odj = 0
 
         self._master.title("Parkomat")
 
@@ -132,19 +127,16 @@ class Parkomat():
         self.nrPoj_lbl.pack(side=LEFT, padx=5, pady=5)
         self.getNrPoj = Entry(frame_coins1, width=20)
         self.getNrPoj.pack(side=LEFT, padx=10)
-        self.dodajnr_button = Button(
-            frame_coins1, text="Dodaj", width=10, command=self.dodajnr_click, bg='alice blue')
+        self.dodajnr_button = Button(frame_coins1, text="Dodaj", width=10, command=self.dodajnr_click, bg='alice blue')
         self.dodajnr_button.pack(side=LEFT, padx=5, pady=5)
 
         self.data_park = Label(frame_coins2, text="Data parkowania:")
         self.data_park.pack(side=LEFT, padx=5, pady=5)
         self.getData = Entry(frame_coins2, width=20)
         self.getData.pack(side=LEFT, padx=10)
-        # self.getData.insert(END, datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
         self.getData.insert(END, datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-        self.akt_data_button = Button(
-            frame_coins2, text="Akt. data", width=10, command=self.akt_data_click, bg='alice blue')
+        self.akt_data_button = Button(frame_coins2, text="Akt. data", width=10, command=self.akt_data_click, bg='alice blue')
         self.akt_data_button.pack(side=LEFT, padx=5, pady=5)
 
         self.czas_label = Label(frame_coins3, text="Czas wyjazdu:")
@@ -153,10 +145,8 @@ class Parkomat():
         self.zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
         self.zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
 
-        Button(self._master, text="Anuluj", command=self.closeWindow,
-               bg='IndianRed1').pack(side=RIGHT, padx=5, pady=5)
-        Button(self._master, text="Zatwierdz", command=self.zatw_click,
-               bg='lawn green').pack(side=RIGHT, padx=5, pady=5)
+        Button(self._master, text="Anuluj", command=self.closeWindow, bg='IndianRed1').pack(side=RIGHT, padx=5, pady=5)
+        Button(self._master, text="Zatwierdz", command=self.zatw_click, bg='lawn green').pack(side=RIGHT, padx=5, pady=5)
 
         self._master.mainloop()
 
@@ -171,8 +161,7 @@ class Parkomat():
         elif (len(NrPoj) > 9):
             raise parkomatNiepoprawnyNumerRejestracyjnyExeption
 
-        self.nrPoj_lbl.config(
-            text="Numer rejest.pojazdu:  " + str(NrPoj.upper()))
+        self.nrPoj_lbl.config(text="Numer rejest.pojazdu:  " + str(NrPoj.upper()))
         self.getNrPoj.pack_forget()
         self.dodajnr_button.pack_forget()
 
@@ -181,7 +170,9 @@ class Parkomat():
         self.getData.insert(0, datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
     def countPieniadze(self):
+        
         wplacono = self.przechowywaczMonet.suma()
+
         data1 = self.getData.get()
 
         self.data_park.config(text="Data parkowania:  " + data1)
@@ -189,40 +180,62 @@ class Parkomat():
         self.akt_data_button.pack_forget()
 
         data1 = datetime.datetime.strptime(data1, "%d/%m/%Y %H:%M:%S")
-        if wplacono == Decimal('2'):
-            self.zaplacono_lbl.config(
-                text='Zapłacono: ' + str(wplacono) + ' zł')
-            timedelta1 = timedelta(hours=1)
-            self.czas_label.config(text='Czas wyjazdu: ' + str((data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")))
+
+        if wplacono == Decimal('1'):
+            self.zaplacono_lbl.config(text='Zapłacono: ' + str(wplacono) + ' zł')
+            timedelta1 = timedelta(minutes = 30)
+            self.data_odj = (data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")
+            self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
 
             return
-        wplacono -= Decimal('2')
+        timedelta1=timedelta(seconds = 3600)
+
+        if wplacono == Decimal('2'):
+            self.zaplacono_lbl.config(text='Zapłacono: ' + str(wplacono) + ' zł')
+            timedelta1 = timedelta(hours = 1)
+            self.data_odj = (data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")
+            self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
+
+            return
+        
         timedelta1=timedelta(seconds = 3600)
 
         if wplacono == Decimal('4'):
-            self.zaplacono_lbl.config(
-                text = 'Zapłacono: ' + str(wplacono) + ' zł')
+            self.zaplacono_lbl.config(text = 'Zapłacono: ' + str(wplacono) + ' zł')
             timedelta1 += timedelta(hours = 2)
-            self.czas_label.config(
-                text = 'Czas wyjazdu: ' + str((data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")))
+            self.data_odj = (data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")
+            self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
 
             return
-        wplacono -= Decimal('4')
+        
         timedelta1 += timedelta(seconds = 3600)
 
         self.zaplacono_lbl.config(text = 'Zapłacono: ' + str(wplacono) + ' zł')
-        timedelta1=timedelta(seconds = float(wplacono/Decimal('5')*3600))
-        self.czas_label.config(text = 'Czas wyjazdu: ' + \
-                               str((data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")))
+        timedelta1 += timedelta(seconds = float(wplacono/Decimal('5')*3600))
+        self.data_odj = (data1 + timedelta1).strftime("%d/%m/%Y %H:%M:%S")
+        self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
 
 
     def zatw_click(self):
-        NrPoj=self.getNrPoj.get()
-        wplacono=self.przechowywaczMonet.suma()
-        term=self.getData.get()
+        try:
+            NrPoj=self.getNrPoj.get()
+            wplacono=self.przechowywaczMonet.suma()
 
-        messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper(
-        )) + "\nWplacono:  " + str(wplacono)+" zł" + "\nTermin wyjazdu: " + str(term))
+            if NrPoj == '':
+                raise parkomatPustyNumerRejestracyjnyExeption
+            if len(NrPoj) > 9:
+                raise parkomatNiepoprawnyNumerRejestracyjnyExeption
+            if wplacono == 0:
+                raise parkomatNieWrzuconoPieniadze
+
+        except parkomatPustyNumerRejestracyjnyExeption as pPNPE:
+            messagebox.showinfo("Nie podano numer rejestracyjny pojazdu!", "Prosze podac numer rejestracyjny pojazdu")
+        except parkomatNieWrzuconoPieniadze as pNWPE:
+            messagebox.showinfo("Nie wrzucono pieniadze!", "Prosze wplacic pieniadze")
+        except parkomatNiepoprawnyNumerRejestracyjnyExeption as pNNRPE:
+            messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!", "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
+
+        messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper()) + "\nWplacono:  " + str(wplacono)+" zł\n" + "Czas wyjazdu: " + str(self.data_odj))
 
 
 
@@ -245,6 +258,8 @@ class parkomatExeption(Exeption):
     '''
     Klasa ogólna dla wszystkich wyjątków
     '''
+    def __init__(self, message):
+        self.message=message
 class ZlyNominalException(Exception):
     '''
     Wyjątek zgłoszony, jeśli wplacona nieznana wartosc
@@ -255,15 +270,23 @@ class parkomatFullException(parkomatException):
     '''
     Wyjątek zgłoszony, jeśli parkomat jest pelny
     '''
+    def __init__(self, message):
+        self.message=message
 class parkomatNiepoprawnyNumerRejestracyjnyExeption(parkomatExeption):
     '''
     Wyjątek zgłoszony, jeśli podano niepoprawny numer rejestracyjny pojazdu
     '''
+    def __init__(self, message):
+        self.message=message
 class parkomatPustyNumerRejestracyjnyExeption(parkomatExeption):
     '''
     Wyjątek zgłoszony, jeśli nie podano numeru rejestracyjnego pojazdu
     '''
+    def __init__(self, message):
+        self.message=message
 class parkomatNieWrzuconoPieniadze(parkomatExeption):
     '''
     Wyjątek zgłoszony, jeśli nie wrzucono zadnej monety
     '''
+    def __init__(self, message):
+        self.message=message
