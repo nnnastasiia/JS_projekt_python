@@ -20,8 +20,10 @@ class Pieniadze:
         except ZlyNominalException as zne:
             print(zne.message)
 
+    @property
     def pobierz_wartosc(self):
         return self._wartosc
+
 
 
 m001 = Pieniadze(0.01)
@@ -48,8 +50,8 @@ class PrzechowywaczMonet:
                 if len(self._lista_monet) < 200:
                     self._lista_monet.append(moneta)
                 else:
-                    raise parkomatFullExeption
-        except parkomatFullExeption as pFE:
+                    raise parkomatFullException
+        except parkomatFullException as pFE:
             showinfo("Parkomat pelny", "Przepraszamy, parkomat jest pelny")
 
     def suma(self):
@@ -172,14 +174,15 @@ class Parkomat():
     def countPieniadze(self):
         
         wplacono = self.przechowywaczMonet.suma()
-
         data1 = self.getData.get()
 
         self.data_park.config(text="Data parkowania:  " + data1)
         self.getData.pack_forget()
         self.akt_data_button.pack_forget()
-
-        data1 = datetime.datetime.strptime(data1, "%d/%m/%Y %H:%M:%S")
+        try:
+            data1 = datetime.datetime.strptime(data1, "%d/%m/%Y %H:%M:%S")
+        except parkomatNiepoprawnyFormatDaty:
+            raise parkomatNiepoprawnyFormatDaty("Niepoprawny format daty, prosze podac date w formacie d/m/Y H:M:S")
 
         if wplacono == Decimal('1'):
             self.zaplacono_lbl.config(text='Zapłacono: ' + str(wplacono) + ' zł')
@@ -242,6 +245,57 @@ class Parkomat():
 
 
 
+class parkomatException(Exception):
+    '''
+    Klasa ogólna dla wszystkich wyjątków
+    '''
+    def __init__(self, message):
+        self.message=message
+
+class ZlyNominalException(Exception):
+    '''
+    Wyjątek zgłoszony, jeśli wplacona nieznana wartosc
+    '''
+    def __init__(self, message):
+        self.message=message
+
+class parkomatFullException(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli parkomat jest pelny
+    '''
+    def __init__(self, message):
+        self.message=message
+class parkomatNiepoprawnyNumerRejestracyjnyExeption(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli podano niepoprawny numer rejestracyjny pojazdu
+    '''
+    def __init__(self, message):
+        self.message=message
+class parkomatPustyNumerRejestracyjnyExeption(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli nie podano numeru rejestracyjnego pojazdu
+    '''
+    def __init__(self, message):
+        self.message=message
+class parkomatNieWrzuconoPieniadze(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli nie wrzucono zadnej monety
+    '''
+    def __init__(self, message):
+        self.message=message
+
+class parkomatNiepoprawnyFormatDaty(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli podany niepoprawny format daty
+    '''
+    def __init__(self, message):
+        self.message=message
+
+
+
+
+
+
 from tkinter import Tk
 
 root=tk.Tk()
@@ -249,44 +303,3 @@ przechowywaczMonet=PrzechowywaczMonet()
 my_window=Parkomat(root, przechowywaczMonet)
 
 
-
-
-
-
-
-class parkomatExeption(Exeption):
-    '''
-    Klasa ogólna dla wszystkich wyjątków
-    '''
-    def __init__(self, message):
-        self.message=message
-class ZlyNominalException(Exception):
-    '''
-    Wyjątek zgłoszony, jeśli wplacona nieznana wartosc
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatFullException(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli parkomat jest pelny
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatNiepoprawnyNumerRejestracyjnyExeption(parkomatExeption):
-    '''
-    Wyjątek zgłoszony, jeśli podano niepoprawny numer rejestracyjny pojazdu
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatPustyNumerRejestracyjnyExeption(parkomatExeption):
-    '''
-    Wyjątek zgłoszony, jeśli nie podano numeru rejestracyjnego pojazdu
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatNieWrzuconoPieniadze(parkomatExeption):
-    '''
-    Wyjątek zgłoszony, jeśli nie wrzucono zadnej monety
-    '''
-    def __init__(self, message):
-        self.message=message
