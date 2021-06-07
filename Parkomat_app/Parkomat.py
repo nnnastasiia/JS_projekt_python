@@ -4,68 +4,14 @@ from tkinter import messagebox
 from tkinter.ttk import Frame, Label, Button, Entry
 import datetime
 from datetime import timedelta
-from tkinter import *
-from tkinter.messagebox import showinfo
 from decimal import Decimal
-
-
-# Pieniądze
-class Pieniadze:
-    def __init__(self, wartosc):
-        try:
-            if wartosc in {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50}:
-                self._wartosc = Decimal(str(wartosc))
-            else:
-                raise ZlyNominalException("Nieznany nominal")
-        except ZlyNominalException as zne:
-            print(zne.message)
-
-    def pobierz_wartosc(self):
-        return self._wartosc
-
-
-
-m001 = Pieniadze(0.01)
-m002 = Pieniadze(0.02)
-m005 = Pieniadze(0.05)
-m01 = Pieniadze(0.1)
-m02 = Pieniadze(0.2)
-m05 = Pieniadze(0.5)
-m1 = Pieniadze(1)
-m2 = Pieniadze(2)
-m5 = Pieniadze(5)
-m10 = Pieniadze(10)
-m20 = Pieniadze(20)
-m50 = Pieniadze(50)
-
-
-class PrzechowywaczMonet:
-    def __init__(self):
-        self._lista_monet = []
-
-    def dodaj_monete(self, moneta):
-        try:
-            if isinstance(moneta, Pieniadze):
-                if len(self._lista_monet) < 200:
-                    self._lista_monet.append(moneta)
-                else:
-                    raise parkomatFullException
-        except parkomatFullException as pFE:
-            showinfo("Parkomat pelny", "Przepraszamy, parkomat jest pelny")
-
-    def suma(self):
-        suma_monet = Decimal(0)
-        for moneta in self._lista_monet:
-            suma_monet = suma_monet + moneta.pobierz_wartosc()
-        return suma_monet
-
-    def reset(self):
-        self._lista_monet = []
+from errors import *
+from parkomat_money import pieniadze
+from parkomat_money.pieniadze import *
 
 
 class Parkomat():
 
-    
 
     def __init__(self, master, przech):
         self._master = master
@@ -237,69 +183,7 @@ class Parkomat():
         except parkomatNiepoprawnyNumerRejestracyjnyExeption as pNNRPE:
             messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!", "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
         if (wplacono != 0) and (NrPoj != ''):
+            self.przechowywaczMonet.reset()
             self.closeWindow()
             messagebox.showinfo("Paragon", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper()) + "\n\nWplacono:  " + str(wplacono)+" zł\n\n" "Czas zakupu:  " + str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + "\n\nCzas wyjazdu: " + str(self.data_odj))
-
-
-
-
-
-
-class parkomatException(Exception):
-    '''
-    Klasa ogólna dla wszystkich wyjątków
-    '''
-    def __init__(self, message):
-        self.message=message
-
-class ZlyNominalException(Exception):
-    '''
-    Wyjątek zgłoszony, jeśli wplacona nieznana wartosc
-    '''
-    def __init__(self, message):
-        self.message=message
-
-class parkomatFullException(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli parkomat jest pelny
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatNiepoprawnyNumerRejestracyjnyExeption(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli podano niepoprawny numer rejestracyjny pojazdu
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatPustyNumerRejestracyjnyExeption(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli nie podano numeru rejestracyjnego pojazdu
-    '''
-    def __init__(self, message):
-        self.message=message
-class parkomatNieWrzuconoPieniadze(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli nie wrzucono zadnej monety
-    '''
-    def __init__(self, message):
-        self.message=message
-
-class parkomatNiepoprawnyFormatDaty(parkomatException):
-    '''
-    Wyjątek zgłoszony, jeśli podany niepoprawny format daty
-    '''
-    def __init__(self, message):
-        self.message=message
-
-
-
-
-
-
-from tkinter import Tk
-
-root=tk.Tk()
-przechowywaczMonet=PrzechowywaczMonet()
-my_window=Parkomat(root, przechowywaczMonet)
-
 
