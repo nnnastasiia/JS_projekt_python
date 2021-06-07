@@ -29,224 +29,188 @@ class Pieniadze:
             print(zne.message)
 
     def pobierz_wartosc(self):
-            return  self._wartosc
+        return  self._wartosc
+        
+m001 = Pieniadze(0.01)
+m002 = Pieniadze(0.02)
+m005 = Pieniadze(0.05)
+m01 = Pieniadze(0.1)
+m02 = Pieniadze(0.2) 
+m05 = Pieniadze(0.5)
+m1 = Pieniadze(1)
+m2 = Pieniadze(2)
+m5 = Pieniadze(5)
+m10 = Pieniadze(10)
+m20 = Pieniadze(20)
+m50 = Pieniadze(50)
 
 class PrzechowywaczMonet:  
-    _lista_monet = []
-    def __init__(self, lista_m):
-        self._lista_monet = lista_m
+    def __init__(self):
+        self._lista_monet = []
     def dodaj_monete(self, moneta):
-        if isinstance(moneta, Moneta):
-            if len(lista_m) < 200:
-                self._lista_monet.append(moneta)
-            else:
-                raise parkomatFullExeption
-        else:
-            print('Przeslany obiekt nie jest moneta')
+        try:
+            if isinstance(moneta, Pieniadze):
+                if len(self._lista_monet) < 200:
+                    self._lista_monet.append(moneta)
+                else:
+                    raise parkomatFullExeption ("Parkomat jest pelny")
+        except parkomatFullExeption as pFE:
+            showinfo("Pakromat pelny", "Przepraszamy, parkomat jest pelny")
+
     def suma(self):
         suma_monet = Decimal(0)
         for moneta in self._lista_monet:
             suma_monet = suma_monet + moneta.pobierz_wartosc()
         return suma_monet
         
-
-# class Czas_Pracy:
-#     def __init__(self):
-#         self._akt_data = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+    def reset(self):
+        self._lista_monet = []
         
-#     def dodanie_czasu(self, akt_data: datetime, delta: timedelta):
-#         while akt_data.weekday() in (5, 6):
-#             akt_data = self._pocz_nast_dzien(akt_data)
-            
-#         dzis_do20 = datetime.combine(akt_data.date(), time(20))
-#         czas_do_konca = (dzis_do20 - self.akt_data)
-#         if delta <= czas_do_konca:
-#             return ak_data + delta
-#         delta -= czas_do_konca
-        
-#         akt_data = self._pocz_nast_dzien(akt_data)
-#         day = timedelta(minutes = 720)
-        
-#         while delta>= day:
-#             delta -= day
-#             akt_data = self._pocz_nast_dzien(akt_data)
-            
-#         return akt_data + delta
-    
-#     def _pocz_nast_dzien(self, akt_data):
-        
-#         nowa_data = datetime.combine(akt_ata.date() + timedelta(days = 1), time(hour = 8))
-#         if nowa_data.weekday() in (5,6):
-#             return self._pocz_nast_dzien(nowa_data)
-#         return nowa_data
-    
-#     def ponow_time(self):
-#         self._akt_data = self._akt_data + timedelta(seconds = 1)
-
-
-
-
-
 class Parkomat():
     
-    def __init__(self, master):
+    def __init__(self, master, przech):
         self._master = master
+        self.przechowywaczMonet = przech
         self._current_delta = timedelta(seconds=0)
-
-        def dodajnr_click():
-            NrPoj = getNrPoj.get()
-            
-            if (len(NrPoj)==0):
-#                 messagebox.showerror("Błąd!", "Brak numeru rejestracyjnego!")
-#                 return
-                raise parkomatPustyNumerRejestracyjnyExeption
-            elif (len(NrPoj)>9):
-#                 messagebox.showerror("Błąd!", "Numer rejestracyjny dłuższy niż 9 znaków!")
-#                 return
-                raise parkomatNiepoprawnyNumerRejestracyjnyExeption
-            #getNrPoj.delete(0, END)
-            #getNrPoj.insert(0, NrPoj.upper())
-            nrPoj_lbl.config(text = "Numer rejest.pojazdu:  " + str(NrPoj.upper()))
-            getNrPoj.pack_forget()
-            dodajnr_button.pack_forget()
-  
-        def akt_data_click():
-            getData.delete(0, END)
-            getData.insert(0, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-
-#         def zatw_click():
-#             NrPoj = getNrPoj.get()
-#             term = getData.get()
-#             #startDateString = getData.get()
-#             #startDate = datetime.datetime.strptime(startDateString, '%Y-%m-%d %H:%M')
-#             #if (NrPoj != 0) and (wplacono != 0):
-#             messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:"+ str(NrPoj.upper()) + "\nWplacono:"+ str(wpl)+"\nTermin wyjazdu: ")
-            
-        def closeWindow():
-            root.destroy() 
-    
-        def countPieniadze():
-            wplacono = 0
-            data1 = getData.get()
-            for key, value in pieniadze.pieniadze.items():
-                wplacono += value*key*100
-            zaplacono_lbl.config(text='Zapłacono: ' + str(round(wplacono/100.0,2)) + ' zł')
-            data_park.config(text = "Data parkowania:  " + data1)
-            getData.pack_forget()
-            akt_data_button.pack_forget()
-            if (round(wplacono/100.0,2) == 1.0):
-                nowa_data = str(data1 + timedelta(minutes=30))
-#                 czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(minutes=30)))
-                czas_label.config(text='Czas wyjazdu: ' + nowa_data)
-            if (round(wplacono/100.0,2) == 5.0):
-                czas_label.config(text='Czas wyjazdu: ' + str(data1 + timedelta(hours=1, minutes=45)))
-            if (round(wplacono/100.0,2) == 2.0):
-                czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(hours=1)))
-            if (round(wplacono/100.0,2) == 4.0):
-                czas_label.config(text='Czas wyjazdu: ' + str(data1 + timedelta(hours=2)))
-        def zatw_click():
-            NrPoj = getNrPoj.get()
-            term = getData.get()
-            #startDateString = getData.get()
-            #startDate = datetime.datetime.strptime(startDateString, '%Y-%m-%d %H:%M')
-            #if (NrPoj != 0) and (wplacono != 0):
-            messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:"+ str(NrPoj.upper()) + "\nWplacono:"+ str((round(wplacono/100.0,2)))+"\nTermin wyjazdu: ")
-            
-#             if ((round(wplacono/100.0,2) == 11.0) or ((round(wplacono/100.0,2)-6) % 5 == 0)):
-# #                 nowy_czas += datetime.datetime.now() + timedelta(hours=1)
-#                 czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + timedelta(hours=3)))
-#             for wplacono in int(wplacono):
-#                 if ((round(wplacono/100.0,2) == 11.0) or ((round(wplacono/100.0,2)-6) % 5 == 0)):
-#                     nowy_czas += timedelta(hours=1)
-#                     czas_label.config(text='Czas wyjazdu: ' + str(datetime.datetime.now() + nowy_czas))
-
-        pieniadze=Pieniadze()
-#         wplacono=0
-
-            
-            
-        master.title("Parkomat")
+        
+        
+        self._master.title("Parkomat")
     
         
     
-        Label(master, text = " ")
-        
-        frame_coins1 = Frame(root)
+        Label(self._master, text = " ")
+
+        frame_coins1 = Frame(self._master)
         frame_coins1.pack(fill=BOTH, expand=True)
-        
-        button1g = Button(frame_coins1, text="1g", width=12, bg='bisque2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.01), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
-    
-        button2g = Button(frame_coins1, text="2g", width=12, bg='bisque2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.02), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
-    
-        button5g = Button(frame_coins1, text="5g", width=12, bg='bisque2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.05), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
 
-        frame_coins2 = Frame(root)
+        button1g = Button(frame_coins1, text="1g", width=12, bg='bisque2',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m001), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+
+        button2g = Button(frame_coins1, text="2g", width=12, bg='bisque2',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m002), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+
+        button5g = Button(frame_coins1, text="5g", width=12, bg='bisque2',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m005), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+
+        frame_coins2 = Frame(self._master)
         frame_coins2.pack(fill=BOTH, expand=True)
 
         button10g = Button(frame_coins2, text="10g", width=12, bg='MistyRose2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.10), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
-    
-        button20g = Button(frame_coins2, text="20g", width=12, bg='MistyRose2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.20), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
-    
-        button50g = Button(frame_coins2, text="50g", width=12, bg='MistyRose2',\
-                      command= lambda: [pieniadze.dodaj_monete(0.50), countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m01), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
 
-        frame_coins3 = Frame(root)
+        button20g = Button(frame_coins2, text="20g", width=12, bg='MistyRose2',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m02), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+
+        button50g = Button(frame_coins2, text="50g", width=12, bg='MistyRose2',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m05), self.countPieniadze()]).pack(side = LEFT, padx=5, pady=5)
+
+        frame_coins3 = Frame(self._master)
         frame_coins3.pack(fill=BOTH, expand=True)
 
         button1zl = Button(frame_coins3, text="1zł", width=12, bg='LightPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(1), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
-    
-        button2zl = Button(frame_coins3, text="2zł", width=12, bg='LightPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(2), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
-    
-        button5zl = Button(frame_coins3, text="5zł", width=12, bg='LightPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(5), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m1), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
 
-        frame_banktoty1 = Frame(root)
+        button2zl = Button(frame_coins3, text="2zł", width=12, bg='LightPink1',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m2), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
+
+        button5zl = Button(frame_coins3, text="5zł", width=12, bg='LightPink1',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m5), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
+
+        frame_banktoty1 = Frame(self._master)
         frame_banktoty1.pack(fill=BOTH, expand=True)
 
         button10zl = Button(frame_banktoty1, text="10zł", width=12, bg='HotPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(10), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
-    
-        button20zl = Button(frame_banktoty1, text="20zł", width=12, bg='HotPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(20), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
-    
-        button50zl = Button(frame_banktoty1, text="50zł", width=12, bg='HotPink1',\
-                      command= lambda: [pieniadze.dodaj_monete(50), countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
-    
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m10), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
 
-        nrPoj_lbl = Label(frame_coins1, text="Numer rejest.pojazdu:")
-        nrPoj_lbl.pack(side = LEFT,padx=5, pady=5)
-        getNrPoj = Entry(frame_coins1, width = 20)
-        getNrPoj.pack(side=LEFT, padx=10)
-        dodajnr_button = Button(frame_coins1, text= "Dodaj", width = 10, command = dodajnr_click, bg='alice blue')
-        dodajnr_button.pack(side = LEFT, padx=5, pady=5)
-    
-        data_park = Label(frame_coins2, text="Data parkowania:")
-        data_park.pack(side = LEFT,padx=5, pady=5)
-        getData = Entry(frame_coins2, width=20)
-        getData.pack(side=LEFT, padx=10)
+        button20zl = Button(frame_banktoty1, text="20zł", width=12, bg='HotPink1',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m20), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
+
+        button50zl = Button(frame_banktoty1, text="50zł", width=12, bg='HotPink1',\
+                          command= lambda self=self: [self.przechowywaczMonet.dodaj_monete(m50), self.countPieniadze()]).pack(side = LEFT,padx=5, pady=5)
+
+
+        self.nrPoj_lbl = Label(frame_coins1, text="Numer rejest.pojazdu:")
+        self.nrPoj_lbl.pack(side = LEFT,padx=5, pady=5)
+        self.getNrPoj = Entry(frame_coins1, width = 20)
+        self.getNrPoj.pack(side=LEFT, padx=10)
+        self.dodajnr_button = Button(frame_coins1, text= "Dodaj", width = 10, command = self.dodajnr_click, bg='alice blue')
+        self.dodajnr_button.pack(side = LEFT, padx=5, pady=5)
+
+        self.data_park = Label(frame_coins2, text="Data parkowania:")
+        self.data_park.pack(side = LEFT,padx=5, pady=5)
+        self.getData = Entry(frame_coins2, width=20)
+        self.getData.pack(side=LEFT, padx=10)
         #getData.insert(END, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
+
+        self.akt_data_button = Button(frame_coins2, text="Akt. data", width=10, command = self.akt_data_click, bg='alice blue')
+        self.akt_data_button.pack(side = LEFT, padx=5, pady=5)
+
+
+        self.czas_label = Label(frame_coins3, text="Czas wyjazdu:")
+        self.czas_label.pack(side = LEFT,padx=5, pady=5)
+
+        self.zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
+        self.zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
+
+        Button(self._master, text="Anuluj", command = self.closeWindow, bg='IndianRed1').pack(side = RIGHT,padx=5, pady=5)
+        Button(self._master, text="Zatwierdz",command = self.zatw_click, bg='lawn green').pack(side = RIGHT,padx=5, pady=5)
+
+            
+        self._master.mainloop()
         
-        akt_data_button = Button(frame_coins2, text="Akt. data", width=10, command = akt_data_click, bg='alice blue')
-        akt_data_button.pack(side = LEFT, padx=5, pady=5)
+    def closeWindow(self):
+        self._master.destroy() 
+
+    def dodajnr_click(self):
+        NrPoj = self.getNrPoj.get()
+            
+        if (len(NrPoj)==0):
+            raise parkomatPustyNumerRejestracyjnyExeption
+        elif (len(NrPoj)>9):
+            raise parkomatNiepoprawnyNumerRejestracyjnyExeption
+
+        self.nrPoj_lbl.config(text = "Numer rejest.pojazdu:  " + str(NrPoj.upper()))
+        self.getNrPoj.pack_forget()
+        self.dodajnr_button.pack_forget()
         
-    
-        czas_label = Label(frame_coins3, text="Czas wyjazdu:")
-        czas_label.pack(side = LEFT,padx=5, pady=5)
+    def akt_data_click(self):
+        self.getData.delete(0, END)
+        self.getData.insert(0, datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
         
-        zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
-        zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
         
-        Button(master, text="Anuluj", command = closeWindow, bg='IndianRed1').pack(side = RIGHT,padx=5, pady=5)
-        Button(master, text="Zatwierdz",command = zatw_click, bg='lawn green').pack(side = RIGHT,padx=5, pady=5)
-    
+    def countPieniadze(self):
+        wplacono = self.przechowywaczMonet.suma()
+        data1 = self.getData.get()
+
+        self.data_park.config(text = "Data parkowania:  " + data1)
+        self.getData.pack_forget()
+        self.akt_data_button.pack_forget()
+
+        if wplacono <= Decimal('2'):
+            timedelta1 = timedelta(seconds=float(wplacono/Decimal('2')*3600))
+            self.czas_label.config(text='Czas wyjazdu: ' + str(data1 + str(timedelta1)))
+            return
+        wplacono -= Decimal('2')
+        timedelta1 = timedelta(seconds=3600)
+            
+        if total_value <= Decimal('4'):
+            timedelta1 += timedelta(seconds=float(wplacono/Decimal('4')*3600))
+            self.czas_label.config(text='Czas wyjazdu: ' + str(data1 + str(timedelta1)))
+            return
+        wplacono -= Decimal('4')
+        timedelta1 += timedelta(seconds=3600)
+            
+        timedelta1 = timedelta(seconds=float(wplacono/Decimal('5')*3600))
+        self.czas_label.config(text='Czas wyjazdu: ' + str(data1 + str(timedelta1)))
+        
+    def zatw_click(self):
+        NrPoj = self.getNrPoj.get()
+        term = self.getData.get()
+
+        messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:"+ str(NrPoj.upper()) + "\nWplacono:"+ str((round(wplacono/100.0,2)))+"\nTermin wyjazdu: ")
+             
+        
     
        
 
@@ -254,5 +218,38 @@ class Parkomat():
 from tkinter import Tk 
 
 root = tk.Tk()
-my_window = Parkomat(root)
-root.mainloop()
+przechowywaczMonet = PrzechowywaczMonet()
+my_window = Parkomat(root, przechowywaczMonet)   
+        
+        
+        
+        
+        
+        
+
+class parkomatExeption(Exeption):
+    '''
+    Klasa ogólna dla wszystkich wyjątków
+    '''
+class ZlyNominalException(Exception):
+    '''
+    Wyjątek zgłoszony, jeśli wplacona nieznana wartosc
+    '''
+    def __init__(self,message):
+        self.message = message
+class parkomatFullException(parkomatException):
+    '''
+    Wyjątek zgłoszony, jeśli parkomat jest pelny
+    '''
+class parkomatNiepoprawnyNumerRejestracyjnyExeption(parkomatExeption):
+    '''
+    Wyjątek zgłoszony, jeśli podano niepoprawny numer rejestracyjny pojazdu
+    '''
+class parkomatPustyNumerRejestracyjnyExeption(parkomatExeption):
+    '''
+    Wyjątek zgłoszony, jeśli nie podano numeru rejestracyjnego pojazdu
+    '''
+class parkomatNieWrzuconoPieniadze(parkomatExeption):
+    '''
+    Wyjątek zgłoszony, jeśli nie wrzucono zadnej monety
+    '''
