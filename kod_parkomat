@@ -18,16 +18,36 @@ from typing import Tuple
 
 
 #Pieniądze
-class Pieniadze():
-    def __init__(self):
-        self.pieniadze=[(50,0),(20,0),(10,0),(5,0),\
-                    (2,0),(1,0),(0.50,0),(0.20,0),\
-                    (0.10,0),(0.05,0),(0.02,0),(0.01,0)]
-        self.pieniadze=OrderedDict(self.pieniadze) 
+class Pieniadze:
+    def __init__(self, wartosc):
+        try:
+            if wartosc in {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50}:
+                self._wartosc = Decimal(str(wartosc))
+            else:
+                raise ZlyNominalException("Nieznany nominal")
+        except ZlyNominalException as zne:
+            print(zne.message)
 
+    def pobierz_wartosc(self):
+            return  self._wartosc
 
+class PrzechowywaczMonet:  
+    _lista_monet = []
+    def __init__(self, lista_m):
+        self._lista_monet = lista_m
     def dodaj_monete(self, moneta):
-        self.pieniadze[moneta]+=1    
+        if isinstance(moneta, Moneta):
+            if len(lista_m) < 200:
+                self._lista_monet.append(moneta)
+            else:
+                raise parkomatFullExeption
+        else:
+            print('Przeslany obiekt nie jest moneta')
+    def suma(self):
+        suma_monet = Decimal(0)
+        for moneta in self._lista_monet:
+            suma_monet = suma_monet + moneta.pobierz_wartosc()
+        return suma_monet
         
 
 # class Czas_Pracy:
@@ -77,11 +97,13 @@ class Parkomat():
             NrPoj = getNrPoj.get()
             
             if (len(NrPoj)==0):
-                messagebox.showerror("Błąd!", "Brak numeru rejestracyjnego!")
-                return
+#                 messagebox.showerror("Błąd!", "Brak numeru rejestracyjnego!")
+#                 return
+                raise parkomatPustyNumerRejestracyjnyExeption
             elif (len(NrPoj)>9):
-                messagebox.showerror("Błąd!", "Numer rejestracyjny dłuższy niż 9 znaków!")
-                return
+#                 messagebox.showerror("Błąd!", "Numer rejestracyjny dłuższy niż 9 znaków!")
+#                 return
+                raise parkomatNiepoprawnyNumerRejestracyjnyExeption
             #getNrPoj.delete(0, END)
             #getNrPoj.insert(0, NrPoj.upper())
             nrPoj_lbl.config(text = "Numer rejest.pojazdu:  " + str(NrPoj.upper()))
