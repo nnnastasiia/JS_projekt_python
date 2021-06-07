@@ -20,7 +20,6 @@ class Pieniadze:
         except ZlyNominalException as zne:
             print(zne.message)
 
-    @property
     def pobierz_wartosc(self):
         return self._wartosc
 
@@ -159,9 +158,9 @@ class Parkomat():
         NrPoj = self.getNrPoj.get()
 
         if (len(NrPoj) == 0):
-            raise parkomatPustyNumerRejestracyjnyExeption
+            raise parkomatPustyNumerRejestracyjnyExeption("Prosze podac numer rejestracyjny pojazdu")
         elif (len(NrPoj) > 9):
-            raise parkomatNiepoprawnyNumerRejestracyjnyExeption
+            raise parkomatNiepoprawnyNumerRejestracyjnyExeption("Prosze podac poprawny numer rejestracyjny pojazdu")
 
         self.nrPoj_lbl.config(text="Numer rejest.pojazdu:  " + str(NrPoj.upper()))
         self.getNrPoj.pack_forget()
@@ -225,11 +224,11 @@ class Parkomat():
             wplacono=self.przechowywaczMonet.suma()
 
             if NrPoj == '':
-                raise parkomatPustyNumerRejestracyjnyExeption
+                raise parkomatPustyNumerRejestracyjnyExeption("Prosze podac numer rejestracyjny pojazdu")
             if len(NrPoj) > 9:
-                raise parkomatNiepoprawnyNumerRejestracyjnyExeption
+                raise parkomatNiepoprawnyNumerRejestracyjnyExeption("Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
             if wplacono == 0:
-                raise parkomatNieWrzuconoPieniadze
+                raise parkomatNieWrzuconoPieniadze("Prosze wplacic pieniadze")
 
         except parkomatPustyNumerRejestracyjnyExeption as pPNPE:
             messagebox.showinfo("Nie podano numer rejestracyjny pojazdu!", "Prosze podac numer rejestracyjny pojazdu")
@@ -237,8 +236,9 @@ class Parkomat():
             messagebox.showinfo("Nie wrzucono pieniadze!", "Prosze wplacic pieniadze")
         except parkomatNiepoprawnyNumerRejestracyjnyExeption as pNNRPE:
             messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!", "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
-
-        messagebox.showinfo("Sukces!", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper()) + "\nWplacono:  " + str(wplacono)+" zł\n" + "Czas wyjazdu: " + str(self.data_odj))
+        if (wplacono != 0) and (NrPoj != ''):
+            self.closeWindow()
+            messagebox.showinfo("Paragon", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper()) + "\n\nWplacono:  " + str(wplacono)+" zł\n\n" "Czas zakupu:  " + str(datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S")) + "\n\nCzas wyjazdu: " + str(self.data_odj))
 
 
 
