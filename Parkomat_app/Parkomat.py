@@ -145,11 +145,11 @@ class Parkomat():
         except:
             pass
 
+            
         try:
             data1 = datetime.datetime.strptime(data1, "%d/%m/%Y %H:%M:%S")
-        except parkomatNiepoprawnyFormatDaty:
-            raise parkomatNiepoprawnyFormatDaty(
-                "Niepoprawny format daty, prosze podac date w formacie d/m/Y H:M:S")
+        except ValueError :
+            raise parkomatNiepoprawnyFormatDaty("Niepoprawny format daty, prosze podac date w formacie dd/mm/YYYY HH:MM:SS") from None
 
         if self.przechowywaczMonet.esli5zl() == True:
             timedelta = datetime.timedelta(minutes=105)

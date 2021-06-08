@@ -17,17 +17,16 @@ class testyParkomat(unittest.TestCase):
         przechowywaczMonet=PrzechowywaczMonet()
         self.parkomat = Parkomat(master, przechowywaczMonet)
 
-    # def test_niepopawny_format_daty_set(self):
-    #     '''
-    #     Test sprawdza poprawność formatu podanej daty
-    #     '''
-    #     self.parkomat.resetParkomat()
-    #     self.parkomat.getData = datetime.combine(date(2021, 6, 8), datetime.now().time())
+    def test_niepopawny_format_daty_set(self):
+        '''
+        Test sprawdza poprawność formatu podanej daty
+        '''
 
-    #     with self.assertRaises(parkomatNiepoprawnyFormatDaty):
-    #         self.parkomat.getData = '34:67:94'
+        #data1 = datetime.datetime.now()
+        self.parkomat.getData.delete(0, END)
+        self.parkomat.getData.insert(0, "2000-03-30 22:30:00")
 
-    #     self.parkomat.getData = '12:34:00'
+        self.assertRaises(parkomatNiepoprawnyFormatDaty, lambda self=self : self.parkomat.countPieniadze())
 
     def test_4godziny_po_aktualnym_czasie(self):
         '''
