@@ -179,9 +179,9 @@ class Parkomat():
             if hours == 2 and wplacono >= 5:
                 wplacono = wplacono - 5
                 timedelta = timedelta + datetime.timedelta(hours=1)
-
-        self.data_odj = (data1 + timedelta).strftime("%d/%m/%Y %H:%M:%S")
-        self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
+        if timedelta > datetime.timedelta(seconds=0):
+            self.data_odj = (data1 + timedelta).strftime("%d/%m/%Y %H:%M:%S")
+            self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))
 
         return
 
