@@ -16,16 +16,19 @@ class PrzechowywaczMonet:
                 return True
         return False
 
-    def dodaj_monete(self, moneta):
-        try:
-            if isinstance(moneta, Pieniadze):
-                if len(self._lista_monet) < 1000:
-                    self._lista_monet.append(moneta)
-                else:
-                    raise parkomatFullException
-        except parkomatFullException as pFE:
-            messagebox.showinfo(
+    def dodaj_monete(self, moneta, showMessage = True):
+        counter = 0
+        for mon in self._lista_monet:
+            if (mon.pobierz_wartosc() == moneta.pobierz_wartosc()):
+                counter += 1
+        if counter == 200:
+            if showMessage == True:
+                 messagebox.showinfo(
                 "Parkomat pelny", "Przepraszamy, parkomat jest pelny")
+            raise parkomatFullException("Przepraszamy, parkomat jest pelny")
+        
+        
+        self._lista_monet.append(moneta)
 
     def suma(self):
         suma_monet = Decimal(0)

@@ -131,8 +131,7 @@ class Parkomat():
         self.getData.insert(
             0, datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-    def countPieniadze(self):
-
+    def countPieniadze(self, ShowMessage=True):
         wplacono = self.przechowywaczMonet.suma()
         self.zaplacono_lbl.config(
             text='Zapłacono: ' + str(wplacono) + ' zł')
@@ -145,11 +144,14 @@ class Parkomat():
         except:
             pass
 
-            
         try:
             data1 = datetime.datetime.strptime(data1, "%d/%m/%Y %H:%M:%S")
-        except ValueError :
-            raise parkomatNiepoprawnyFormatDaty("Niepoprawny format daty, prosze podac date w formacie dd/mm/YYYY HH:MM:SS") from None
+        except ValueError:
+            if ShowMessage == True:
+                messagebox.showinfo("Niepoprawny format daty!!!",
+                                    "Niepoprawny format daty, prosze podac date w formacie dd/mm/YYYY HH:MM:SS")
+            raise parkomatNiepoprawnyFormatDaty(
+                "Niepoprawny format daty, prosze podac date w formacie dd/mm/YYYY HH:MM:SS") from None
 
         if self.przechowywaczMonet.esli5zl() == True:
             timedelta = datetime.timedelta(minutes=105)
@@ -185,29 +187,29 @@ class Parkomat():
 
         return
 
-    def zatw_click(self):
+    def zatw_click(self, ShowMessage=True):
         # try:
         NrPoj = self.getNrPoj.get()
         wplacono = self.przechowywaczMonet.suma()
 
         if NrPoj == '':
+            if ShowMessage == True:
+                messagebox.showinfo("Nie podano numer rejestracyjny pojazdu!",
+                                    "Prosze podac numer rejestracyjny pojazdu")
             raise parkomatPustyNumerRejestracyjnyExeption(
                 "Prosze podac numer rejestracyjny pojazdu")
         if len(NrPoj) > 9:
+            if ShowMessage == True:
+                messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!",
+                                    "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
             raise parkomatNiepoprawnyNumerRejestracyjnyExeption(
                 "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
         if wplacono == 0:
+            if ShowMessage == True:
+                messagebox.showinfo("Nie wrzucono pieniadze!",
+                                    "Prosze wplacic pieniadze")
             raise parkomatNieWrzuconoPieniadze("Prosze wplacic pieniadze")
 
-        # except parkomatPustyNumerRejestracyjnyExeption as pPNPE:
-        #     messagebox.showinfo("Nie podano numer rejestracyjny pojazdu!",
-        #                         "Prosze podac numer rejestracyjny pojazdu")
-        # except parkomatNieWrzuconoPieniadze as pNWPE:
-        #     messagebox.showinfo("Nie wrzucono pieniadze!",
-        #                         "Prosze wplacic pieniadze")
-        # except parkomatNiepoprawnyNumerRejestracyjnyExeption as pNNRPE:
-        #     messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!",
-        #                         "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
         if (wplacono != 0) and (NrPoj != ''):
             self.przechowywaczMonet.reset()
             messagebox.showinfo("Paragon", "Numer rejestracyjny pojazdu:" + str(NrPoj.upper()) + "\n\nWplacono:  " + str(wplacono) +
