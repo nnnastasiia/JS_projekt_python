@@ -22,7 +22,6 @@ class testyParkomat(unittest.TestCase):
         Test sprawdza poprawność formatu podanej daty
         '''
 
-        #data1 = datetime.datetime.now()
         self.parkomat.getData.delete(0, END)
         self.parkomat.getData.insert(0, "2000-03-30 22:30:00")
 
@@ -55,15 +54,22 @@ class testyParkomat(unittest.TestCase):
         self.assertEqual(self.parkomat.data_odj, (data1 + timedelta(minutes=240)).strftime("%d/%m/%Y %H:%M:%S"))
 
 
-    # def test_polgodziny_za_1zl(self):
-    #     '''
-    #     Test sprawdza czy po wrzuceniu 1 zł doda się pół godziny
-    #     '''
-    #     self.parkomat.getData = datetime.combine(date(2021, 6, 8), time(13, 15, 00))
+    def test_polgodziny_za_1zl(self):
+        '''
+        Test sprawdza czy po wrzuceniu 1 zł doda się pół godziny
+        '''
+        self.parkomat.akt_data_click()
+        data = self.parkomat.getData.get()
+        data = datetime.datetime.strptime(data, "%d/%m/%Y %H:%M:%S")
 
-    #     self.parkomat.przechowywaczMonet.dodaj_monete(m1)
 
-    #     self.assertEqual(self.parkomat.data_odj, datetime(2021, 6, 8, 13, 45, 00))
+        self.parkomat.przechowywaczMonet.dodaj_monete(m1)
+        self.parkomat.countPieniadze()
+
+        dataEnd = self.parkomat.data_odj
+        dataEnd = datetime.datetime.strptime(dataEnd, "%d/%m/%Y %H:%M:%S")
+
+        self.assertEqual(dataEnd, (data + timedelta(minutes=30)))
 
     # def test_plus_1godzina_monetami_z_mala_wartoscia(self):
     #     '''
