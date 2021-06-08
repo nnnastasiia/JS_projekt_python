@@ -10,6 +10,12 @@ class PrzechowywaczMonet:
     def __init__(self):
         self._lista_monet = []
 
+    def esli5zl(self):
+        if len(self._lista_monet) == 1:
+            if self._lista_monet[0].pobierz_wartosc() == 5:
+                return True
+        return False
+
     def dodaj_monete(self, moneta):
         try:
             if isinstance(moneta, Pieniadze):
@@ -18,7 +24,8 @@ class PrzechowywaczMonet:
                 else:
                     raise parkomatFullException
         except parkomatFullException as pFE:
-            messagebox.showinfo("Parkomat pelny", "Przepraszamy, parkomat jest pelny")
+            messagebox.showinfo(
+                "Parkomat pelny", "Przepraszamy, parkomat jest pelny")
 
     def suma(self):
         suma_monet = Decimal(0)
@@ -28,5 +35,3 @@ class PrzechowywaczMonet:
 
     def reset(self):
         self._lista_monet = []
-
-
