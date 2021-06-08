@@ -19,7 +19,7 @@ class PrzechowywaczMonet:
     def dodaj_monete(self, moneta):
         try:
             if isinstance(moneta, Pieniadze):
-                if len(self._lista_monet) < 200:
+                if len(self._lista_monet) < 1000:
                     self._lista_monet.append(moneta)
                 else:
                     raise parkomatFullException

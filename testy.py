@@ -71,17 +71,23 @@ class testyParkomat(unittest.TestCase):
 
         self.assertEqual(dataEnd, (data + timedelta(minutes=30)))
 
-    # def test_plus_1godzina_monetami_z_mala_wartoscia(self):
-    #     '''
-    #     Test sprawdza, czy po wrzyceniu odpowiedniej wartości monetami 1 g doda odpowiednia godzina
-    #     '''
-    #     self.parkomat.resetParkomat()
-    #     self.parkomat.getData = datetime.combine(date(2021, 6, 8), time(14, 30, 00))
+    def test_plus_1godzina_monetami_z_mala_wartoscia(self):
+        '''
+        Test sprawdza, czy po wrzyceniu odpowiedniej wartości monetami 1 g doda odpowiednia godzina
+        '''
+        self.parkomat.akt_data_click()
+        data = self.parkomat.getData.get()
+        data = datetime.datetime.strptime(data, "%d/%m/%Y %H:%M:%S")
 
-    #     for _ in range(200):
-    #         self.parkomat.przechowywaczMonet.dodaj_monete(m001)
+        for _ in range(200):
+            self.parkomat.przechowywaczMonet.dodaj_monete(m001)
 
-    #     self.assertEqual(self.parkomat.data_odj, datetime(2021, 6, 8, 15, 30, 00))
+        self.parkomat.countPieniadze()
+
+        dataEnd = self.parkomat.data_odj
+        dataEnd = datetime.datetime.strptime(dataEnd, "%d/%m/%Y %H:%M:%S")
+
+        self.assertEqual(dataEnd, (data + timedelta(hours=1)))
 
     # def test_pelny_parkomat_error(self):
     #     '''
