@@ -40,3 +40,5 @@ class PrzechowywaczMonet:
         return suma_monet
 
 
+    def reset(self):
+        self._lista_monet = []
