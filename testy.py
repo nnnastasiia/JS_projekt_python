@@ -27,7 +27,7 @@ class testyParkomat(unittest.TestCase):
         self.assertRaises(parkomatNiepoprawnyFormatDaty,
                           lambda self=self: self.parkomat.countPieniadze(False))
 
-    def test_4godziny_po_aktualnym_czasie(self):
+    def test_poprawne_liczenie_godzin_po_aktualnym_czasie(self):
         '''
         Test spzawdza, czy po wrzyceniu odpowiedniej wartości doda się odpowiedni czas
         '''
@@ -90,7 +90,7 @@ class testyParkomat(unittest.TestCase):
 
         self.assertEqual(dataEnd, (data + timedelta(hours=1)))
 
-    def test_pelny_parkomat_error(self):
+    def test_pelny_parkomat_blad(self):
         '''
         Test sprawdza, czy po wrzyceniu za duzo monet, program wypisze bląd o przepelnieniu
         '''
@@ -100,7 +100,7 @@ class testyParkomat(unittest.TestCase):
             for _ in range(201):
                 self.parkomat.przechowywaczMonet.dodaj_monete(m001, False)
 
-    def test_nie_wrzucono_pieniadze_error(self):
+    def test_nie_wrzucono_pieniadze_blad(self):
         '''
         Test sprawdza, czy jeżeli nie wrzucono żadnej monety, program wypisze bląd, że nie wrzucono żadnej monety
         '''
@@ -110,13 +110,13 @@ class testyParkomat(unittest.TestCase):
         self.assertRaises(parkomatNieWrzuconoPieniadze,
                           lambda self=self: self.parkomat.zatw_click(False))
 
-    def test_pusty_numer_rejestracyjny_pojazdu_error(self):
+    def test_pusty_numer_rejestracyjny_pojazdu_blad(self):
         '''
         Test sprawdza, czy jezeli nie podano numer pojadzu, 
         program wypisze bląd o postym lub niepoprawnym numerze pojazdy
         '''
         self.assertRaises(parkomatPustyNumerRejestracyjnyExeption,
-                          lambda self=self: self.parkomat.dodajnr_click())
+                          lambda self=self: self.parkomat.dodajnr_click(False))
 
         self.parkomat.akt_data_click()
         self.parkomat.przechowywaczMonet.dodaj_monete(m2, False)
@@ -125,14 +125,14 @@ class testyParkomat(unittest.TestCase):
         self.assertRaises(parkomatPustyNumerRejestracyjnyExeption,
                           lambda self=self: self.parkomat.zatw_click(False))
 
-    def test_niepoprawny_numer_rejestracyjny_pojazdu_error(self):
+    def test_niepoprawny_numer_rejestracyjny_pojazdu_blad(self):
         '''
         Test sprawdza, czy jezeli podano niepoprawny numer rejestracyjny pojazdu, 
         program wypisze bląd o postym lub niepoprawnym numerze pojazdy
         '''
         self.parkomat.getNrPoj.insert(0, "wr000001010111")
         self.assertRaises(parkomatNiepoprawnyNumerRejestracyjnyExeption,
-                          lambda self=self: self.parkomat.dodajnr_click())
+                          lambda self=self: self.parkomat.dodajnr_click(False))
 
         self.parkomat.akt_data_click()
         self.parkomat.przechowywaczMonet.dodaj_monete(m2, False)

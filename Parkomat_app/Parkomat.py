@@ -2,10 +2,8 @@ import tkinter
 from tkinter import *
 from tkinter import Tk
 from tkinter import messagebox
-from tkinter.ttk import Frame, Label, Button, Entry, Style
+from tkinter.ttk import Frame, Label, Button, Entry
 import datetime
-from datetime import timedelta
-from decimal import Decimal
 from parkomat_money import *
 from parkomat_money import pieniadze
 from parkomat_money.pieniadze import *
@@ -14,7 +12,9 @@ from parkomat_money.przechowywaczMonet import *
 
 
 class Parkomat():
-
+    '''
+    Klasa zawiera główną część graficzną Parkomatu
+    '''
     def __init__(self, master, przech):
         self._master = master
         self.przechowywaczMonet = przech
@@ -97,7 +97,7 @@ class Parkomat():
         self.zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
         self.zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
 
-        Button(self._master, text="Anuluj", command=self.closeWindow,
+        Button(self._master, text="Anuluj", command=self.resetParkomat,
                bg="IndianRed1").pack(side=RIGHT, padx=5, pady=5)
         Button(self._master, text="Zatwierdz", command=self.zatw_click,
                bg="lawn green").pack(side=RIGHT, padx=5, pady=5)
@@ -108,30 +108,39 @@ class Parkomat():
     def closeWindow(self):
         self._master.destroy()
 
-    def resetParkomat(self):
-        pass
+    def resetParkomat(self):            #przy cliknęciu przycisku "Anuluj", przed wrzuceniem monet Parkomat zresetuje dane
+        self.getNrPoj.delete(0, END)
+        self.getData.delete(0, END)
+        self.wplacono =  0
 
-    def dodajnr_click(self):
+
+    def dodajnr_click(self, ShowMessage=True):          # funkcja, przy kliknęciu przycisku "Dodaj" zaktualizuje się Numer pojazdu 
         NrPoj = self.getNrPoj.get()
 
-        if (len(NrPoj) == 0):
+        if NrPoj == '':
+            if ShowMessage == True:
+                messagebox.showinfo("Nie podano numer rejestracyjny pojazdu!",
+                                    "Prosze podac numer rejestracyjny pojazdu")
             raise parkomatPustyNumerRejestracyjnyExeption(
                 "Prosze podac numer rejestracyjny pojazdu")
-        elif (len(NrPoj) > 9):
+        if len(NrPoj) > 9:
+            if ShowMessage == True:
+                messagebox.showinfo("Podano nie numer rejestracyjny pojazdu!",
+                                    "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
             raise parkomatNiepoprawnyNumerRejestracyjnyExeption(
-                "Prosze podac poprawny numer rejestracyjny pojazdu")
+                "Prosze sprawdzic numer rejestracyjny pojazdu oraz podac poprawny")
 
         self.nrPoj_lbl.config(
             text="Numer rejest.pojazdu:  " + str(NrPoj.upper()))
         self.getNrPoj.pack_forget()
         self.dodajnr_button.pack_forget()
 
-    def akt_data_click(self):
+    def akt_data_click(self):                       # funkcja pozwalająca na automatyczne wpisanie aktualnej daty
         self.getData.delete(0, END)
         self.getData.insert(
             0, datetime.datetime.now().strftime("%d/%m/%Y %H:%M:%S"))
 
-    def countPieniadze(self, ShowMessage=True):
+    def countPieniadze(self, ShowMessage=True):         # glówna funkcja licząca sume wplaconych monet oraz aktualizuje czas wyjazdu
         wplacono = self.przechowywaczMonet.suma()
         self.zaplacono_lbl.config(
             text='Zapłacono: ' + str(wplacono) + ' zł')
@@ -187,7 +196,7 @@ class Parkomat():
 
         return
 
-    def zatw_click(self, ShowMessage=True):
+    def zatw_click(self, ShowMessage=True):         #funkcja, przy kliknęciu przycisku "Zatwierdz" wydaje paragon? jeżeli wszystkie pola są wypelnione poprawnie
         # try:
         NrPoj = self.getNrPoj.get()
         wplacono = self.przechowywaczMonet.suma()

@@ -7,10 +7,13 @@ from parkomat_money.pieniadze import *
 
 
 class PrzechowywaczMonet:
+    '''
+    Klasa reprezentujaca pzrechowywanie monet, wrzucenie i sumę wrzuconych monet
+    '''
     def __init__(self):
         self._lista_monet = []
 
-    def esli5zl(self):
+    def jesli5zl(self):
         if len(self._lista_monet) == 1:
             if self._lista_monet[0].pobierz_wartosc() == 5:
                 return True

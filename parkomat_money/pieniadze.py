@@ -3,6 +3,9 @@ from decimal import Decimal
 
 # Pieniądze
 class Pieniadze:
+    '''
+    Klasa reprezentująca dostępne wartości monet i banknotów oraz wyjątki przy pomyłkach
+    '''
     def __init__(self, wartosc):
         try:
             if wartosc in {0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1, 2, 5, 10, 20, 50}:
@@ -16,7 +19,7 @@ class Pieniadze:
         return self._wartosc
 
 
-
+#Dodanie dozwolonych wartości
 m001 = Pieniadze(0.01)
 m002 = Pieniadze(0.02)
 m005 = Pieniadze(0.05)

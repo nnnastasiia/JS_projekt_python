@@ -1,4 +1,6 @@
 
+#Klasy wszystkich możliwych wyjątków
+
 class parkomatException(Exception):
     '''
     Klasa ogólna dla wszystkich wyjątków
