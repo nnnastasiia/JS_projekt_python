@@ -8,7 +8,7 @@ from parkomat_money.pieniadze import *
 
 class PrzechowywaczMonet:
     '''
-    Klasa reprezentujaca pzrechowywanie monet, wrzucenie i sumę wrzuconych monet
+    Klasa reprezentująca przechowywanie monet, wrzucenie i sumę wrzuconych monet
     '''
     def __init__(self):
         self._lista_monet = []
@@ -19,7 +19,7 @@ class PrzechowywaczMonet:
                 return True
         return False
 
-    def dodaj_monete(self, moneta, showMessage = True):
+    def dodaj_monete(self, moneta, showMessage = True):     #funkcja dodająca monety odpowiedniej wartosci przy wrzuceniu do parkomatu
         counter = 0
         for mon in self._lista_monet:
             if (mon.pobierz_wartosc() == moneta.pobierz_wartosc()):
@@ -28,16 +28,15 @@ class PrzechowywaczMonet:
             if showMessage == True:
                  messagebox.showinfo(
                 "Parkomat pelny", "Przepraszamy, parkomat jest pelny")
-            raise parkomatFullException("Przepraszamy, parkomat jest pelny")
+            raise parkomatPelnyException("Przepraszamy, parkomat jest pelny")
         
         
         self._lista_monet.append(moneta)
 
-    def suma(self):
+    def suma(self):             #funkcja sumująca wrzucone monety lub banknoty do parkomatu
         suma_monet = Decimal(0)
         for moneta in self._lista_monet:
             suma_monet = suma_monet + moneta.pobierz_wartosc()
         return suma_monet
 
-    def reset(self):
-        self._lista_monet = []
+

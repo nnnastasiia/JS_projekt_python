@@ -15,7 +15,7 @@ class ZlyNominalException(Exception):
     def __init__(self, message):
         self.message=message
 
-class parkomatFullException(parkomatException):
+class parkomatPelnyException(parkomatException):
     '''
     Wyjątek zgłoszony, jeśli parkomat jest pelny
     '''

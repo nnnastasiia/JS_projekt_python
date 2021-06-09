@@ -97,7 +97,7 @@ class Parkomat():
         self.zaplacono_lbl = Label(frame_banktoty1, text="Zaplacono:")
         self.zaplacono_lbl.pack(side=LEFT, padx=5, pady=5)
 
-        Button(self._master, text="Anuluj", command=self.resetParkomat,
+        Button(self._master, text="Anuluj", command=self.closeParkomat,
                bg="IndianRed1").pack(side=RIGHT, padx=5, pady=5)
         Button(self._master, text="Zatwierdz", command=self.zatw_click,
                bg="lawn green").pack(side=RIGHT, padx=5, pady=5)
@@ -105,13 +105,12 @@ class Parkomat():
     def startWindow(self):
         self._master.mainloop()
 
-    def closeWindow(self):
-        self._master.destroy()
 
-    def resetParkomat(self):            #przy cliknęciu przycisku "Anuluj", przed wrzuceniem monet Parkomat zresetuje dane
+    def closeParkomat(self):            #przy cliknęciu przycisku "Anuluj", przed wrzuceniem monet Parkomat zresetuje dane i zamyka okno programu
         self.getNrPoj.delete(0, END)
         self.getData.delete(0, END)
-        self.wplacono =  0
+        self._lista_monet =  0
+        self._master.destroy()
 
 
     def dodajnr_click(self, ShowMessage=True):          # funkcja, przy kliknęciu przycisku "Dodaj" zaktualizuje się Numer pojazdu 
@@ -162,7 +161,7 @@ class Parkomat():
             raise parkomatNiepoprawnyFormatDaty(
                 "Niepoprawny format daty, prosze podac date w formacie dd/mm/YYYY HH:MM:SS") from None
 
-        if self.przechowywaczMonet.esli5zl() == True:
+        if self.przechowywaczMonet.jesli5zl() == True:
             timedelta = datetime.timedelta(minutes=105)
             self.data_odj = (data1 + timedelta).strftime("%d/%m/%Y %H:%M:%S")
             self.czas_label.config(text='Czas wyjazdu: ' + str(self.data_odj))

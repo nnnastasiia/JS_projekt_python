@@ -14,7 +14,7 @@ class Pieniadze:
                 raise ZlyNominalException("Nieznany nominal")
         except ZlyNominalException as zne:
             print(zne.message)
-
+    #@property
     def pobierz_wartosc(self):
         return self._wartosc
 
